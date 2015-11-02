@@ -1,0 +1,11 @@
+*.exe
+C#/bin/Debug/PowerFlow.vshost.exe.manifest
+*.cache
+C#/PowerFlow.v12.suo
+*.pdb
+C++/PowerFlow/Debug/PowerFlow.ilk
+*.sdf
+C++/PowerFlow/PowerFlow.v12.suo
+*.obj
+C++/PowerFlow/PowerFlow/Debug/vc120.idb
+*.tlog

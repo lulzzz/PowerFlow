@@ -1,0 +1,1 @@
+C:\YoungProject\PowerFlow\C#\obj\x86\Debug\PowerFlow.csprojResolveAssemblyReference.cache
