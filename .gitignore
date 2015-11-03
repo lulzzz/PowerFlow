@@ -9,3 +9,5 @@ C++/PowerFlow/PowerFlow.v12.suo
 *.obj
 C++/PowerFlow/PowerFlow/Debug/vc120.idb
 *.tlog
+*.opensdf
+C++/PowerFlow/PowerFlow/Debug/PowerFlow.log
