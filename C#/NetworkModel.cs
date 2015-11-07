@@ -70,7 +70,7 @@ namespace PowerFlow
             StreamReader objReader = new StreamReader("ieee14cdf.txt");
             string sline = " ";
             // read the header
-            sline = objReader.ReadLine();
+            sline = objReader.ReadLine(); 
             sline = objReader.ReadLine();
             Console.WriteLine("these are the header");
             
@@ -136,10 +136,45 @@ namespace PowerFlow
         }
         public void CalculateYBus()
         {
+            Y_Bus = new DenseMatrix(buses.Count, buses.Count);
             foreach (Branch branch in branches)
             {
-
+                int fromBus = Convert.ToInt32(branch.FromBus) - 1;
+                int toBus = Convert.ToInt32(branch.ToBus) - 1;
+                Complex impedance = new Complex(branch.Resistance,branch.Reactance);
+                Complex admittance = 1/impedance;
+                if (branch.Ratio != 0)
+                {
+                    double t = 1 / branch.Ratio;
+                    Y_Bus[fromBus, toBus] = -1 * t * admittance + Y_Bus[fromBus, toBus];
+                    Y_Bus[toBus, fromBus] = -1 * t * admittance + Y_Bus[toBus, fromBus];
+                    Y_Bus[fromBus, fromBus] = Y_Bus[fromBus, fromBus] + t * t * admittance;
+                    Y_Bus[toBus, toBus] = Y_Bus[toBus, toBus] + admittance;
+                }
+                else
+                {
+                    Complex shuntsusceptance = new Complex(0,0.5*branch.Susceptance);
+                    Y_Bus[fromBus, fromBus] = Y_Bus[fromBus, fromBus] + admittance + shuntsusceptance;
+                    Y_Bus[toBus, toBus] = Y_Bus[toBus, toBus] + admittance + shuntsusceptance;
+                    Y_Bus[fromBus, toBus] = Y_Bus[fromBus, toBus] - admittance;
+                    Y_Bus[toBus, fromBus] = Y_Bus[toBus, fromBus] - admittance;
+                }
             }
+            foreach (Bus bus in buses)
+            {
+                if (bus.ShuntSusceptance != 0)
+                {
+                    Complex busshuntsusceptance = new Complex(0,bus.ShuntSusceptance);
+                    for (int i = 0; i < Y_Bus.ColumnCount; i++)
+                    {
+                        if (i==(Convert.ToInt32(bus.ID)-1))
+                        {
+                            Y_Bus[i, i] = Y_Bus[i, i] + busshuntsusceptance;
+                        }
+                    }
+                }
+            }
+            //Console.WriteLine(Y_Bus);
         }
         public void Solve_PowerFlow()
         {
